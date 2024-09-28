@@ -1,3 +1,1 @@
-10 Sarah Laptop 500.00 5.00 Cash Completed 10-02-2024
-12 Elle Phone 800.00 10.00 Cash Completed 12-02-2024
-13 Ram Camera 700.00 5.00 Cash Returned 15-02-2024
+
