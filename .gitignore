@@ -1,1 +1,4 @@
-build 
+#ignore the .vscode folder
+
+.vscode/*
+
