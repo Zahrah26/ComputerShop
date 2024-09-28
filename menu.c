@@ -18,7 +18,7 @@ int main() {
                 productStaffMenu();
                 break;
             case 2:
-                staffMenu();
+                UserMenu();
             case 3:
                 break;
             default:
