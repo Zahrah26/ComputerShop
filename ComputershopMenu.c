@@ -5,7 +5,7 @@
 
 int main() {
     int choice;
-    printf("Welcome:\n");
+    printf("Welcome!\n");
 
     while (1) {
         printf("1. Product\n");
