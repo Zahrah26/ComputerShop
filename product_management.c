@@ -1,3 +1,5 @@
+//Shreya Doorgachurn 2312862
+
 #include <stdio.h>
 #include <string.h>
 #include "product_management.h"
@@ -37,7 +39,7 @@ void viewProducts() {
 
             printf("\nID\t  Name\t\tPrice\t\tQuantity\n");
     while (fscanf(file, "%d\t%s\t\t%f\t%d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
-        printf("%d\t%s\t\t%.2f\t\t%d\n", p.id, p.name, p.price, p.quantity);
+        printf("%d\t%s\t\t%.2f\t%d\n", p.id, p.name, p.price, p.quantity);
     }
     fclose(file);
 }
