@@ -5,7 +5,7 @@
 #include "product_management.h"
 
 #define FILENAME "product.txt"
-#define UPASSWORD "staff123"
+
 void addProduct() {
     Product p;
     FILE *file = fopen(FILENAME, "a");
@@ -131,23 +131,9 @@ void loadFromFile() {
 void saveToFile() {
     // Save any new data to the file if necessary
 }
-int verifyUPassword() {
-    char password[50];
-    printf("Enter staff password: ");
-    scanf("%s", password);
-    if (strcmp(password, UPASSWORD) == 0) {
-        return 1;  // Password is correct
-    } else {
-        return 0;  // Password is incorrect
-    }
-}
 
 void productStaffMenu() {
-    if (!verifyUPassword()) {
-        printf("Incorrect password. Access denied.\n");
-        return;
-    }
-
+   
     int choice;
     while (1) {
         printf("\nStaff Menu\n");
