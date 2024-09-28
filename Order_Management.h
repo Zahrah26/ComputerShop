@@ -1,24 +1,32 @@
 #ifndef ORDER_MANAGEMENT_H
 #define ORDER_MANAGEMENT_H
 
+#define MAX_NAME_LENGTH 50
+#define MAX_PRODUCT_LENGTH 50
+#define MAX_PAYMENT_METHOD 20
+#define MAX_STATUS 15
+
 typedef struct {
-    int orderID;
-    char name[50];         // Customer's name
-    char productName[50];   // Added field for product name
-    int customerID;
-    char orderDate[20];
-    float totalAmount;
-    float discount;        // Field for discount
-    char paymentMethod[20]; // Field for payment method (e.g., "Credit", "Cash", etc.)
-    char status[20];
+    int day;
+    int month;
+    int year;
+} Date;
+
+typedef struct {
+    int orderId;
+    char customerName[MAX_NAME_LENGTH];
+    char product[MAX_PRODUCT_LENGTH];
+    float price;
+    float discount;
+    char paymentMethod[MAX_PAYMENT_METHOD];
+    char status[MAX_STATUS]; 
+    Date orderDate; 
 } Order;
 
-void create_order(Order *order);
-void update_order(int orderID, Order *newOrder);
-void delete_order(int orderID, char *output);
-void query_order(int orderID, char *output);
-void list_orders(char *output);
-void save_orders_to_file(const char *filename);
-void load_orders_from_file(const char *filename);
+void addOrder();
+void viewOrders();
+void queryOrder(int id);
+void deleteOrder(int id);
+void updateOrder(int id);
 
 #endif
