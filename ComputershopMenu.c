@@ -19,7 +19,6 @@ int main() {
                 break;
             case 2:
                 UserMenu();
-            case 3:
                 break;
             default:
                 printf("Invalid choice. Try again.\n");
