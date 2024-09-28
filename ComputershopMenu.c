@@ -1,4 +1,4 @@
-//Menu of the computer shop
+// Shop Menu
 #include <stdio.h>
 #include "product_management.h"
 #include "user_management.h"
