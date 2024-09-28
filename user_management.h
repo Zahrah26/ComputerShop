@@ -14,7 +14,6 @@ void addUser();
 void viewUsers();
 void updateUser();
 void deleteUser();
-int verifyPassword();
-void staffMenu();
+void UserMenu();
 
 #endif // USER_MANAGEMENT_H

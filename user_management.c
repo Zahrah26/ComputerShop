@@ -4,7 +4,6 @@
 #include "user_management.h"
 
 #define FILENAME "user.txt"
-#define PASSWORD "staff123"  // Define the staff password
 
 void addUser() {
     User u;
@@ -118,23 +117,8 @@ void deleteUser() {
     }
 }
 
-int verifyPassword() {
-    char password[50];
-    printf("Enter staff password: ");
-    scanf("%s", password);
-    if (strcmp(password, PASSWORD) == 0) {
-        return 1;  // Password is correct
-    } else {
-        return 0;  // Password is incorrect
-    }
-}
 
-void staffMenu() {
-    if (!verifyPassword()) {
-        printf("Incorrect password. Access denied.\n");
-        return;
-    }
-
+void UserMenu() {
     int choice;
     while (1) {
         printf("\nStaff Menu\n");

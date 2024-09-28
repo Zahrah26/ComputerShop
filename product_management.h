@@ -17,7 +17,6 @@ void updateProduct();
 void deleteProduct();
 void saveToFile();
 void loadFromFile();
-int verifyPassword(); 
 void productStaffMenu(); 
 
 #endif // PRODUCT_MANAGEMENT_H
