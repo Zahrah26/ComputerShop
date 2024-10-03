@@ -9,7 +9,7 @@ typedef struct {
     int productId;
     char productName[50];
     int warrantyYears;
-} Product;
+} ProductStruct;
 
 // Structure for a service request
 typedef struct {
@@ -33,10 +33,10 @@ typedef struct {
 // Function declarations
 
 // Create a new service request for a customer
-void create_service_request(Customer *customer, Product productList[], int productCount);
+void create_service_request(Customer *customer, ProductStruct productList[], int productCount);
 
 // Check if a product is under warranty based on the purchase year
-int check_warranty(Product product, int purchaseYear);
+int check_warranty(ProductStruct product, int purchaseYear);
 
 // Assign a technician to a service request
 void assign_technician(ServiceRequest *serviceRequest, const char *technicianName);

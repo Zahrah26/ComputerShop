@@ -21,7 +21,7 @@ const char* choose_technician(const char *problem) {
     }
 }
 
-void create_service_request(Customer *customer, Product productList[], int productCount) {
+void create_service_request(Customer *customer, ProductStruct productList[], int productCount) {
     int productId, purchaseYear;
     char problem[100];
 
@@ -37,7 +37,7 @@ void create_service_request(Customer *customer, Product productList[], int produ
     problem[strcspn(problem, "\n")] = 0;  // Remove newline character
 
     // Find the product by ID
-    Product selectedProduct;
+    ProductStruct selectedProduct;
     int productFound = 0;
     for (int i = 0; i < productCount; i++) {
         if (productList[i].productId == productId) {
@@ -73,7 +73,7 @@ void create_service_request(Customer *customer, Product productList[], int produ
     customer->serviceCount++;
 }
 
-int check_warranty(Product product, int purchaseYear) {
+int check_warranty(ProductStruct product, int purchaseYear) {
     int currentYear = 2024;  // Example current year
     int warrantyEndYear = purchaseYear + product.warrantyYears;
 
@@ -134,7 +134,7 @@ void save_service_to_file(Customer customer) {
 
 // Function to handle the after-sales service system
 void after_sales_service_system() {
-    Product productList[] = {
+    ProductStruct productList[] = {
         {101, "Laptop", 2},  // Product with a 2-year warranty
         {102, "Mouse", 1},   // Product with a 1-year warranty
         {103, "Keyboard", 1} // Product with a 1-year warranty
