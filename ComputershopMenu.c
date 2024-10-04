@@ -1,4 +1,4 @@
-//Shop Menu
+//Pixel Shop Menu
 #include <stdio.h>
 #include <string.h>
 
@@ -10,7 +10,7 @@
 
 // Function to display the main menu
 void display_main_menu() {
-    printf("\nMain System Menu\n");
+    printf("\n Pixel Shop Main System Menu\n");
     printf("1. Product\n");
     printf("2. User\n");
     printf("3. Payment Processing System\n");
