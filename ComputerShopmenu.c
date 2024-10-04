@@ -1,4 +1,4 @@
-//Shop Menu
+//Computer Shop Menu
 #include <stdio.h>
 #include <string.h>
 
