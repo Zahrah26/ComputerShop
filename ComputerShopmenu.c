@@ -1,4 +1,8 @@
 //Computer Shop Menu
+//Shreya Doorgachurn
+//Zahrah Suffee
+//Oushvina Seewoobudut
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
