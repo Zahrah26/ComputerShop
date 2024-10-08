@@ -4,7 +4,7 @@
 #include <string.h>
 #include "product_management.h"
 
-#define FILENAME "product.txt"
+#define FILENAME "products.txt"
 
 void addProduct() {
     Product p;
