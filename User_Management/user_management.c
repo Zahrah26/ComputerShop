@@ -3,7 +3,7 @@
 #include <string.h>
 #include "user_management.h"
 
-#define FILENAME "user.txt"
+#define FILENAME "User_Management/user.txt"
 
 void addUser() {
     User u;
