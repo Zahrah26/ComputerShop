@@ -10,8 +10,8 @@
 
 #include "Product_Management/product_management.h"
 #include "User_Management/user_management.h"
-#include "Order_Management/Order_Management.h"  // Include Order Management header
-#include "SalesReport/Sales_Report.h"           // Include Sales Report header
+#include "Order_Management/Order_Management.h"  
+#include "SalesReport/Sales_Report.h"           
 #include "PaymentProcessing/payment.h"
 #include "AfterSalesService/after_sales_service.h"
 
