@@ -28,5 +28,6 @@ void viewOrders();
 void queryOrder(int id);
 void deleteOrder(int id);
 void updateOrder(int id);
+void order_management_menu();  // Menu for handling orders
 
 #endif
