@@ -27,8 +27,6 @@ void display_main_menu() {
     printf("Enter your choice: ");
 }
 
-
-
 int main() {
     int choice;
     int running = 1;
@@ -40,38 +38,23 @@ int main() {
 
         switch (choice) {
             case 1:
-                
                 productStaffMenu();
                 break;
             case 2:
-                
                 UserMenu();
                 break;
             case 3:
-<<<<<<< HEAD
-                
                 payment_processing_system();
                 break;
             case 4:
                 
                 after_sales_service_system();
-=======
-                clear_screen();
-                // Redirect to the Order Management menu
-                order_management_menu();
-                break;
-            case 4:
-                clear_screen();
-                payment_processing_system();
->>>>>>> c41a682c231bdebef2404f4fdbabfa74acb60925
                 break;
             case 5:
                 clear_screen();
                 after_sales_service_system();
                 break;
             case 6:
-                clear_screen();
-                // Redirect to the Sales Report menu
                 sales_report_menu();
                 break;
             case 7:
