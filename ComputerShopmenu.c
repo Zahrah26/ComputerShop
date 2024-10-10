@@ -51,7 +51,6 @@ int main() {
                 after_sales_service_system();
                 break;
             case 5:
-                clear_screen();
                 after_sales_service_system();
                 break;
             case 6:
