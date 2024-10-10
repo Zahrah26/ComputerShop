@@ -1,4 +1,4 @@
-//Computer Shop Menu
+//Pixel Shop Menu
 //Shreya Doorgachurn
 //Zahrah Suffee
 //Oushvina Seewoobudut
