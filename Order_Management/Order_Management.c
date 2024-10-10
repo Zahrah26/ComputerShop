@@ -3,13 +3,15 @@
 #include <string.h>
 #include "Order_Management.h"
 
-#define FILE_NAME "Order_Management/Order.txt"
+#define FILE_NAME "Order.txt"
 
+// Function to input order date
 void getDate(Date *date) {
     printf("Enter Order Date (dd mm yyyy): ");
     scanf("%d %d %d", &date->day, &date->month, &date->year);
 }
 
+// Add a new order
 void addOrder() {
     FILE *file = fopen(FILE_NAME, "a");
     if (file == NULL) {
@@ -43,6 +45,7 @@ void addOrder() {
     printf("Order added successfully.\n");
 }
 
+// View all orders
 void viewOrders() {
     FILE *file = fopen(FILE_NAME, "r");
     if (file == NULL) {
@@ -66,6 +69,7 @@ void viewOrders() {
     fclose(file);
 }
 
+// Query order by ID
 void queryOrder(int id) {
     FILE *file = fopen(FILE_NAME, "r");
     if (file == NULL) {
@@ -101,6 +105,7 @@ void queryOrder(int id) {
     }
 }
 
+// Delete order by ID
 void deleteOrder(int id) {
     FILE *file = fopen(FILE_NAME, "r");
     FILE *tempFile = fopen("temp.txt", "w");
@@ -137,6 +142,7 @@ void deleteOrder(int id) {
     }
 }
 
+// Update order by ID
 void updateOrder(int id) {
     FILE *file = fopen(FILE_NAME, "r+");
     if (file == NULL) {
@@ -146,7 +152,6 @@ void updateOrder(int id) {
 
     Order order;
     int found = 0;
-    long position;
 
     while (fscanf(file, "%d %s %s %f %f %s %s %d-%d-%d", &order.orderId, order.customerName, order.product, 
                   &order.price, &order.discount, order.paymentMethod, order.status, 
@@ -186,4 +191,49 @@ void updateOrder(int id) {
 
     fclose(file);
     printf("Order with ID %d updated successfully.\n");
+}
+
+// Menu for Order Management
+void order_management_menu() {
+    int choice, orderId;
+
+    while (1) {
+        printf("\n--- Order Management System ---\n");
+        printf("1. Add Order\n");
+        printf("2. View All Orders\n");
+        printf("3. Query Order by ID\n");
+        printf("4. Delete Order by ID\n");
+        printf("5. Update Order by ID\n");
+        printf("6. Back to Main Menu\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addOrder();
+                break;
+            case 2:
+                viewOrders();
+                break;
+            case 3:
+                printf("Enter Order ID to query: ");
+                scanf("%d", &orderId);
+                queryOrder(orderId);
+                break;
+            case 4:
+                printf("Enter Order ID to delete: ");
+                scanf("%d", &orderId);
+                deleteOrder(orderId);
+                break;
+            case 5:
+                printf("Enter Order ID to update: ");
+                scanf("%d", &orderId);
+                updateOrder(orderId);
+                break;
+            case 6:
+                return;  // Exit to the main menu
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
 }

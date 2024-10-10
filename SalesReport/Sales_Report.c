@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Sales_Report.h"
+#include "Sales_Report.h"  // No need to include Order_Management.h here
 
-void loadOrders(Order orders[], int *orderCount) {
+// Function to load orders from the file into an array
+void loadOrders(SalesOrder orders[], int *orderCount) {
     FILE *file = fopen("Order.txt", "r");  
     if (file == NULL) {
         printf("Could not open the orders file.\n");
@@ -22,7 +23,8 @@ void loadOrders(Order orders[], int *orderCount) {
     fclose(file);
 }
 
-void generateMonthlySalesReport(Order orders[], int orderCount, int year, int month) {
+// Function to generate the monthly sales report
+void generateMonthlySalesReport(SalesOrder orders[], int orderCount, int year, int month) {
     float totalSales = 0.0;
     float totalDiscount = 0.0;
     float totalReturns = 0.0;
@@ -70,4 +72,34 @@ void generateMonthlySalesReport(Order orders[], int orderCount, int year, int mo
     printf("Total Returns: $%.2f\n", totalReturns);
     printf("Net Revenue (Sales - Discounts - Returns): $%.2f\n", netRevenue);
     printf("-------------------------------------------------\n");
+}
+
+// Function to display the sales report menu and handle user input
+void sales_report_menu() {
+    int year, month;
+    SalesOrder orders[100];  // Use the updated struct SalesOrder
+    int orderCount = 0;
+
+    loadOrders(orders, &orderCount);  // Load orders into the array
+
+    int choice;
+    while (1) {
+        printf("\n--- Sales Report System ---\n");
+        printf("1. Generate Monthly Sales Report\n");
+        printf("2. Back to Main Menu\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter the year and month for the report (YYYY MM): ");
+                scanf("%d %d", &year, &month);
+                generateMonthlySalesReport(orders, orderCount, year, month);  // Use the updated struct SalesOrder
+                break;
+            case 2:
+                return;  // Exit back to the main menu
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
 }
