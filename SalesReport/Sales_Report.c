@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Sales_Report.h"  // No need to include Order_Management.h here
+#include "Sales_Report.h"
 
 // Function to load orders from the file into an array
 void loadOrders(SalesOrder orders[], int *orderCount) {
-    FILE *file = fopen("Order.txt", "r");  
+    FILE *file = fopen("OrderManagement/Order.txt", "r");  // Ensure the file path is correct
     if (file == NULL) {
         printf("Could not open the orders file.\n");
         return;
@@ -51,6 +51,7 @@ void generateMonthlySalesReport(SalesOrder orders[], int orderCount, int year, i
             totalSales += orders[i].price;
             totalDiscount += orders[i].discount;
 
+            // Check if the order is completed or returned
             if (strcmp(orders[i].status, "Completed") == 0) {
                 netRevenue += finalPrice;
                 completedOrders++;
@@ -58,7 +59,7 @@ void generateMonthlySalesReport(SalesOrder orders[], int orderCount, int year, i
 
             if (strcmp(orders[i].status, "Returned") == 0) {
                 totalReturns += orders[i].price;
-                netRevenue -= orders[i].price; 
+                netRevenue -= orders[i].price;
                 returnedOrders++;
             }
         }
@@ -77,10 +78,11 @@ void generateMonthlySalesReport(SalesOrder orders[], int orderCount, int year, i
 // Function to display the sales report menu and handle user input
 void sales_report_menu() {
     int year, month;
-    SalesOrder orders[100];  // Use the updated struct SalesOrder
+    SalesOrder orders[100];  // Array to hold the orders
     int orderCount = 0;
 
-    loadOrders(orders, &orderCount);  // Load orders into the array
+    // Load the orders from the Order.txt file
+    loadOrders(orders, &orderCount);
 
     int choice;
     while (1) {
@@ -94,7 +96,7 @@ void sales_report_menu() {
             case 1:
                 printf("Enter the year and month for the report (YYYY MM): ");
                 scanf("%d %d", &year, &month);
-                generateMonthlySalesReport(orders, orderCount, year, month);  // Use the updated struct SalesOrder
+                generateMonthlySalesReport(orders, orderCount, year, month);  // Generate report for the selected month
                 break;
             case 2:
                 return;  // Exit back to the main menu

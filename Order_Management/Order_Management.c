@@ -3,7 +3,7 @@
 #include <string.h>
 #include "Order_Management.h"
 
-#define FILE_NAME "OrderManagement/Order.txt"
+#define FILE_NAME "Order_Management/Order.txt"
 
 // Function to input order date
 void getDate(Date *date) {
@@ -20,29 +20,32 @@ void addOrder() {
     }
 
     Order newOrder;
-    printf("Enter Order ID: ");
-    scanf("%d", &newOrder.orderId);
-    printf("Enter Customer Name: ");
-    scanf("%s", newOrder.customerName);
-    printf("Enter Product: ");
-    scanf("%s", newOrder.product);
+    printf("Enter Customer ID: ");
+    scanf("%d", &newOrder.customerId);
+    printf("Enter Product Name: ");
+    scanf("%s", newOrder.productName);
     printf("Enter Price: ");
     scanf("%f", &newOrder.price);
     printf("Enter Discount: ");
     scanf("%f", &newOrder.discount);
-    printf("Enter Payment Method: ");
+    printf("Enter Warranty (in years): ");
+    scanf("%d", &newOrder.warrantyYears);
+    printf("Enter Payment Method (cash/card): ");
     scanf("%s", newOrder.paymentMethod);
-    printf("Enter Status: ");
+    printf("Enter Status (pre-order/delivered/pending): ");
     scanf("%s", newOrder.status);
 
+    // Store order date
     getDate(&newOrder.orderDate);
 
-    fprintf(file, "%d %s %s %.2f %.2f %s %s %02d-%02d-%04d\n", newOrder.orderId, newOrder.customerName, newOrder.product, 
-            newOrder.price, newOrder.discount, newOrder.paymentMethod, newOrder.status,
+    // Save the order to the file
+    fprintf(file, "%d %s %.2f %.2f %d %s %s %02d-%02d-%04d\n", 
+            newOrder.customerId, newOrder.productName, newOrder.price, newOrder.discount, 
+            newOrder.warrantyYears, newOrder.paymentMethod, newOrder.status, 
             newOrder.orderDate.day, newOrder.orderDate.month, newOrder.orderDate.year);
 
     fclose(file);
-    printf("Order added successfully.\n");
+    printf("Order added successfully!\n");
 }
 
 // View all orders
@@ -54,23 +57,23 @@ void viewOrders() {
     }
 
     Order order;
-    printf("Order ID\tCustomer Name\tProduct\t\tPrice\tDiscount\tPayment\tStatus\t\tDate\n");
-    printf("--------------------------------------------------------------------------------------------\n");
+    printf("Customer ID\tProduct Name\tPrice\tDiscount\tWarranty\tPayment\tStatus\t\tDate\n");
+    printf("--------------------------------------------------------------------------------------------------\n");
 
-    while (fscanf(file, "%d %s %s %f %f %s %s %d-%d-%d", &order.orderId, order.customerName, order.product, 
-                  &order.price, &order.discount, order.paymentMethod, order.status, 
-                  &order.orderDate.day, &order.orderDate.month, &order.orderDate.year) != EOF) {
-        printf("%d\t\t%s\t\t%s\t\t%.2f\t%.2f\t%s\t%s\t%02d-%02d-%04d\n", 
-               order.orderId, order.customerName, order.product, 
-               order.price, order.discount, order.paymentMethod, order.status,
+    while (fscanf(file, "%d %s %f %f %d %s %s %d-%d-%d", &order.customerId, order.productName, 
+                  &order.price, &order.discount, &order.warrantyYears, order.paymentMethod, 
+                  order.status, &order.orderDate.day, &order.orderDate.month, &order.orderDate.year) != EOF) {
+        printf("%d\t\t%s\t\t%.2f\t%.2f\t%d years\t%s\t%s\t%02d-%02d-%04d\n", 
+               order.customerId, order.productName, order.price, order.discount, 
+               order.warrantyYears, order.paymentMethod, order.status, 
                order.orderDate.day, order.orderDate.month, order.orderDate.year);
     }
 
     fclose(file);
 }
 
-// Query order by ID
-void queryOrder(int id) {
+// Query order by customer ID
+void queryOrder(int customerId) {
     FILE *file = fopen(FILE_NAME, "r");
     if (file == NULL) {
         printf("Error opening file!\n");
@@ -80,19 +83,19 @@ void queryOrder(int id) {
     Order order;
     int found = 0;
 
-    while (fscanf(file, "%d %s %s %f %f %s %s %d-%d-%d", &order.orderId, order.customerName, order.product, 
-                  &order.price, &order.discount, order.paymentMethod, order.status, 
-                  &order.orderDate.day, &order.orderDate.month, &order.orderDate.year) != EOF) {
-        if (order.orderId == id) {
+    while (fscanf(file, "%d %s %f %f %d %s %s %d-%d-%d", &order.customerId, order.productName, 
+                  &order.price, &order.discount, &order.warrantyYears, order.paymentMethod, 
+                  order.status, &order.orderDate.day, &order.orderDate.month, &order.orderDate.year) != EOF) {
+        if (order.customerId == customerId) {
             printf("\nOrder Found:\n");
-            printf("Order ID: %d\n", order.orderId);
-            printf("Customer Name: %s\n", order.customerName);
-            printf("Product: %s\n", order.product);
+            printf("Customer ID: %d\n", order.customerId);
+            printf("Product: %s\n", order.productName);
             printf("Price: %.2f\n", order.price);
             printf("Discount: %.2f\n", order.discount);
+            printf("Warranty: %d years\n", order.warrantyYears);
             printf("Payment Method: %s\n", order.paymentMethod);
             printf("Status: %s\n", order.status);
-            printf("Date: %02d-%02d-%04d\n", order.orderDate.day, order.orderDate.month, order.orderDate.year);
+            printf("Order Date: %02d-%02d-%04d\n", order.orderDate.day, order.orderDate.month, order.orderDate.year);
             found = 1;
             break;
         }
@@ -101,12 +104,12 @@ void queryOrder(int id) {
     fclose(file);
 
     if (!found) {
-        printf("Order with ID %d not found.\n", id);
+        printf("No order found for Customer ID %d.\n", customerId);
     }
 }
 
-// Delete order by ID
-void deleteOrder(int id) {
+// Delete order by customer ID
+void deleteOrder(int customerId) {
     FILE *file = fopen(FILE_NAME, "r");
     FILE *tempFile = fopen("temp.txt", "w");
     if (file == NULL || tempFile == NULL) {
@@ -117,12 +120,13 @@ void deleteOrder(int id) {
     Order order;
     int found = 0;
 
-    while (fscanf(file, "%d %s %s %f %f %s %s %d-%d-%d", &order.orderId, order.customerName, order.product, 
-                  &order.price, &order.discount, order.paymentMethod, order.status, 
-                  &order.orderDate.day, &order.orderDate.month, &order.orderDate.year) != EOF) {
-        if (order.orderId != id) {
-            fprintf(tempFile, "%d %s %s %.2f %.2f %s %s %02d-%02d-%04d\n", order.orderId, order.customerName, order.product, 
-                    order.price, order.discount, order.paymentMethod, order.status,
+    while (fscanf(file, "%d %s %f %f %d %s %s %d-%d-%d", &order.customerId, order.productName, 
+                  &order.price, &order.discount, &order.warrantyYears, order.paymentMethod, 
+                  order.status, &order.orderDate.day, &order.orderDate.month, &order.orderDate.year) != EOF) {
+        if (order.customerId != customerId) {
+            fprintf(tempFile, "%d %s %.2f %.2f %d %s %s %02d-%02d-%04d\n", 
+                    order.customerId, order.productName, order.price, order.discount, 
+                    order.warrantyYears, order.paymentMethod, order.status, 
                     order.orderDate.day, order.orderDate.month, order.orderDate.year);
         } else {
             found = 1;
@@ -136,14 +140,14 @@ void deleteOrder(int id) {
     rename("temp.txt", FILE_NAME);
 
     if (found) {
-        printf("Order with ID %d deleted successfully.\n", id);
+        printf("Order for Customer ID %d deleted successfully.\n", customerId);
     } else {
-        printf("Order with ID %d not found.\n", id);
+        printf("No order found for Customer ID %d.\n", customerId);
     }
 }
 
-// Update order by ID
-void updateOrder(int id) {
+// Update order status by customer ID
+void updateOrderStatus(int customerId) {
     FILE *file = fopen(FILE_NAME, "r+");
     if (file == NULL) {
         printf("Error opening file!\n");
@@ -153,57 +157,46 @@ void updateOrder(int id) {
     Order order;
     int found = 0;
 
-    while (fscanf(file, "%d %s %s %f %f %s %s %d-%d-%d", &order.orderId, order.customerName, order.product, 
-                  &order.price, &order.discount, order.paymentMethod, order.status, 
-                  &order.orderDate.day, &order.orderDate.month, &order.orderDate.year) != EOF) {
-        if (order.orderId == id) {
+    while (fscanf(file, "%d %s %f %f %d %s %s %d-%d-%d", &order.customerId, order.productName, 
+                  &order.price, &order.discount, &order.warrantyYears, order.paymentMethod, 
+                  order.status, &order.orderDate.day, &order.orderDate.month, &order.orderDate.year) != EOF) {
+        if (order.customerId == customerId) {
             found = 1;
             break;
         }
     }
 
     if (!found) {
-        printf("Order with ID %d not found.\n", id);
+        printf("No order found for Customer ID %d.\n", customerId);
         fclose(file);
         return;
     }
 
     fseek(file, -(long)sizeof(order), SEEK_CUR);
 
-    printf("Enter new Customer Name: ");
-    scanf("%s", order.customerName);
-    printf("Enter new Product: ");
-    scanf("%s", order.product);
-    printf("Enter new Price: ");
-    scanf("%f", &order.price);
-    printf("Enter new Discount: ");
-    scanf("%f", &order.discount);
-    printf("Enter new Payment Method: ");
-    scanf("%s", order.paymentMethod);
-    printf("Enter new Status: ");
+    printf("Enter new status (pre-order/delivered/pending): ");
     scanf("%s", order.status);
-    printf("Enter new Order Date (dd mm yyyy): ");
-    scanf("%d %d %d", &order.orderDate.day, &order.orderDate.month, &order.orderDate.year);
 
-    fprintf(file, "%d %s %s %.2f %.2f %s %s %02d-%02d-%04d\n", order.orderId, order.customerName, order.product, 
-            order.price, order.discount, order.paymentMethod, order.status,
+    fprintf(file, "%d %s %.2f %.2f %d %s %s %02d-%02d-%04d\n", 
+            order.customerId, order.productName, order.price, order.discount, 
+            order.warrantyYears, order.paymentMethod, order.status, 
             order.orderDate.day, order.orderDate.month, order.orderDate.year);
 
     fclose(file);
-    printf("Order with ID %d updated successfully.\n");
+    printf("Order status updated successfully.\n");
 }
 
-// Menu for Order Management
+// Order Management Menu
 void order_management_menu() {
-    int choice, orderId;
+    int choice, customerId;
 
     while (1) {
         printf("\n--- Order Management System ---\n");
         printf("1. Add Order\n");
         printf("2. View All Orders\n");
-        printf("3. Query Order by ID\n");
-        printf("4. Delete Order by ID\n");
-        printf("5. Update Order by ID\n");
+        printf("3. Query Order by Customer ID\n");
+        printf("4. Delete Order by Customer ID\n");
+        printf("5. Update Order Status by Customer ID\n");
         printf("6. Back to Main Menu\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
@@ -216,19 +209,19 @@ void order_management_menu() {
                 viewOrders();
                 break;
             case 3:
-                printf("Enter Order ID to query: ");
-                scanf("%d", &orderId);
-                queryOrder(orderId);
+                printf("Enter Customer ID to query: ");
+                scanf("%d", &customerId);
+                queryOrder(customerId);
                 break;
             case 4:
-                printf("Enter Order ID to delete: ");
-                scanf("%d", &orderId);
-                deleteOrder(orderId);
+                printf("Enter Customer ID to delete: ");
+                scanf("%d", &customerId);
+                deleteOrder(customerId);
                 break;
             case 5:
-                printf("Enter Order ID to update: ");
-                scanf("%d", &orderId);
-                updateOrder(orderId);
+                printf("Enter Customer ID to update status: ");
+                scanf("%d", &customerId);
+                updateOrderStatus(customerId);
                 break;
             case 6:
                 return;  // Exit to the main menu

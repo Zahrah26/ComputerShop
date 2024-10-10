@@ -18,5 +18,8 @@ void deleteProduct();
 void saveToFile();
 void loadFromFile();
 void productStaffMenu(); 
+int check_product_availability(int productId, int quantity);  // Check availability
+void update_product_quantity(int productId, int quantity);    // Update stock
+
 
 #endif // PRODUCT_MANAGEMENT_H

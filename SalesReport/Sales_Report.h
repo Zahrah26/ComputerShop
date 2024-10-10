@@ -15,8 +15,9 @@ typedef struct {
     int day;
 } SalesOrder;
 
+// Function prototypes
 void loadOrders(SalesOrder orders[], int *orderCount);
 void generateMonthlySalesReport(SalesOrder orders[], int orderCount, int year, int month);
 void sales_report_menu();  // Add the sales report menu declaration
 
-#endif
+#endif  // SALES_REPORT_H

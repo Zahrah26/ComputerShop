@@ -1,6 +1,7 @@
 //Shreya Doorgachurn 2312862
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "user_management.h"
 
 #define FILENAME "User_Management/user.txt"

@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "product_management.h"
 
 #define FILENAME "Product_Management/product.txt"
@@ -115,6 +116,49 @@ void deleteProduct() {
     } else {
         printf("Product not found.\n");
     }
+}
+
+int check_product_availability(int productId, int quantity) {
+    FILE *file = fopen(FILENAME, "r");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return 0;
+    }
+
+    Product p;
+    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
+        if (p.id == productId) {
+            fclose(file);
+            return p.quantity >= quantity;
+        }
+    }
+
+    fclose(file);
+    return 0;
+}
+
+void update_product_quantity(int productId, int quantity) {
+    FILE *file = fopen(FILENAME, "r+");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+
+    FILE *tempFile = fopen("temp.txt", "w");
+    Product p;
+
+    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
+        if (p.id == productId) {
+            p.quantity -= quantity;
+        }
+        fprintf(tempFile, "%d %s %.2f %d\n", p.id, p.name, p.price, p.quantity);
+    }
+
+    fclose(file);
+    fclose(tempFile);
+
+    remove(FILENAME);
+    rename("temp.txt", FILENAME);
 }
 
 void loadFromFile() {

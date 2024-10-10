@@ -1,149 +1,176 @@
 #include "payment.h"
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-// Function to calculate the total cost of items
-float calculate_total(Item items[], int itemCount) {
-    float total = 0;
-    for (int i = 0; i < itemCount; i++) {
-        total += items[i].price * items[i].quantity;
+#define FILE_NAME "PaymentProcessing/transactions.txt"
+
+// Function to retrieve user record from order file
+int get_user_record(int customerId, char productName[], PaymentUser *userRecord) {
+    FILE *file = fopen("Order_Management/Order.txt", "r");
+    if (file == NULL) {
+        printf("Error opening order file.\n");
+        return 0;
     }
-    return total;
-}
 
-// Function to apply a discount to the total amount
-float apply_discount(float total, float discountRate) {
-    return total - (total * discountRate / 100);
-}
+    int id;
+    char product[50];
+    float price, discount;
+    int totalPurchases;
+    char line[256]; // Buffer to store each line of the file
 
-// Function to process the payment by handling multiple payment methods
-void process_payment(Transaction *transaction) {
-    printf("Enter the first payment method (cash/card): ");
-    scanf("%s", transaction->payment.paymentMethod1);
-    
-    printf("Enter amount paid via %s: ", transaction->payment.paymentMethod1);
-    scanf("%f", &transaction->payment.amountPaid1);
+    // Debugging: Print the productName entered by the user
+    printf("Looking for product: '%s'\n", productName);
 
-    if (transaction->payment.amountPaid1 < transaction->payment.totalAmount) {
-        float remainingAmount = transaction->payment.totalAmount - transaction->payment.amountPaid1;
-        printf("Remaining amount: %.2f\n", remainingAmount);
+    // Read the file line by line
+    while (fgets(line, sizeof(line), file)) {
+        // Debugging: Print each line being read
+        printf("Reading line: %s", line);
 
-        printf("Enter the second payment method (cash/card): ");
-        scanf("%s", transaction->payment.paymentMethod2);
-        
-        printf("Enter amount paid via %s: ", transaction->payment.paymentMethod2);
-        scanf("%f", &transaction->payment.amountPaid2);
+        // Use sscanf to parse the line, handling only the required fields
+        int parsed = sscanf(line, "%d %49s %f %f %d", &id, product, &price, &discount, &totalPurchases);
 
-        if (transaction->payment.amountPaid1 + transaction->payment.amountPaid2 >= transaction->payment.totalAmount) {
-            printf("Payment successful!\n");
-        } else {
-            printf("Insufficient funds!\n");
-        }
-    } else {
-        printf("Payment successful!\n");
-    }
-}
+        // Ensure all required fields are parsed
+        if (parsed == 5) {
+            // Debugging: Print the parsed values
+            printf("Parsed ID: %d, Product: '%s', Price: %.2f, Discount: %.2f, TotalPurchases: %d\n", 
+                    id, product, price, discount, totalPurchases);
 
-// Function to update the inventory after a transaction
-void update_inventory(Item inventory[], int inventoryCount, Transaction transaction) {
-    for (int i = 0; i < transaction.itemCount; i++) {
-        for (int j = 0; j < inventoryCount; j++) {
-            if (inventory[j].id == transaction.items[i].id) {
-                if (inventory[j].quantity >= transaction.items[i].quantity) {
-                    inventory[j].quantity -= transaction.items[i].quantity;
-                } else {
-                    printf("Not enough stock for %s\n", inventory[j].name);
-                }
+            // Trim any trailing newline or spaces in product names
+            product[strcspn(product, "\n")] = 0;
+            product[strcspn(product, "\r")] = 0;
+
+            // Compare customer ID and product name (case-sensitive)
+            if (id == customerId && strcmp(product, productName) == 0) {
+                // Populate the user record
+                userRecord->id = id;
+                strcpy(userRecord->product, product);
+                userRecord->price = price;
+                userRecord->discount = discount;
+                userRecord->totalPurchases = totalPurchases;
+                
+                fclose(file);
+                printf("Match found!\n");  // Debugging: Print success message
+                return 1;  // User found
+            } else {
+                // Debugging: Print mismatch details
+                printf("No match: ID = %d, Product = '%s' (input: '%s')\n", id, product, productName);
             }
         }
     }
+
+    fclose(file);
+    printf("Order not found for customer.\n");
+    return 0;  // Order not found
 }
 
-// Function to display the transaction invoice
-void display_invoice(Transaction transaction) {
-    printf("\nInvoice:\n");
-    for (int i = 0; i < transaction.itemCount; i++) {
-        printf("Item: %s | Quantity: %d | Price: %.2f\n", transaction.items[i].name, transaction.items[i].quantity, transaction.items[i].price);
+// Function to apply additional discount if user purchased more than 5 products
+void apply_additional_discount(PaymentUser *userRecord) {
+    if (userRecord->totalPurchases > 5) {
+        printf("Customer qualifies for an additional 2%% loyalty discount!\n");
+        userRecord->discount += 2;  // Add loyalty discount
     }
-    printf("Total Amount: %.2f\n", transaction.payment.totalAmount);
-    printf("Payment Method 1: %s\n", transaction.payment.paymentMethod1);
-    if (transaction.payment.amountPaid2 > 0) {
-        printf("Payment Method 2: %s\n", transaction.payment.paymentMethod2);
+}
+
+// Function to process payment
+void process_payment(PaymentUser userRecord, Payment *payment) {
+    // Calculate total amount after applying the discount
+    payment->totalAmount = userRecord.price - (userRecord.price * userRecord.discount / 100);
+    printf("Total Amount after discount: %.2f\n", payment->totalAmount);
+
+    // Ask for payment method
+    printf("Do you want to make full or part payment? (full/part): ");
+    char paymentChoice[10];
+    scanf("%s", paymentChoice);
+
+    // Full payment
+    if (strcmp(paymentChoice, "full") == 0) {
+        printf("Enter payment method (cash/card): ");
+        scanf("%s", payment->paymentMethod1);
+        payment->amountPaid1 = payment->totalAmount;
+        payment->remainingAmount = 0;  // No remaining balance for full payment
+    } 
+    // Part payment
+    else if (strcmp(paymentChoice, "part") == 0) {
+        printf("Enter payment method for first part (cash/card): ");
+        scanf("%s", payment->paymentMethod1);
+        printf("Enter amount paid for first part: ");
+        scanf("%f", &payment->amountPaid1);
+
+        payment->remainingAmount = payment->totalAmount - payment->amountPaid1;
+        printf("Remaining Amount: %.2f\n", payment->remainingAmount);
+
+        if (payment->remainingAmount > 0) {
+            printf("Enter second payment method (cash/card): ");
+            scanf("%s", payment->paymentMethod2);
+            printf("Enter amount paid for second part: ");
+            scanf("%f", &payment->amountPaid2);
+            payment->remainingAmount -= payment->amountPaid2;
+        }
+    } 
+    else {
+        printf("Invalid payment choice. Defaulting to full payment.\n");
+        strcpy(payment->paymentMethod1, "cash");
+        payment->amountPaid1 = payment->totalAmount;
+        payment->remainingAmount = 0;
+    }
+
+    if (payment->remainingAmount > 0) {
+        printf("Payment incomplete. Remaining balance: %.2f\n", payment->remainingAmount);
+    } else {
+        printf("Payment complete!\n");
     }
 }
 
 // Function to save the transaction details to a file
-void save_transaction_to_file(Transaction transaction) {
+void save_transaction_to_file(PaymentUser userRecord, Payment payment) {
     FILE *file = fopen("transactions.txt", "a");
     if (file == NULL) {
-        printf("Error opening file!\n");
+        printf("Error opening transactions file.\n");
         return;
     }
 
-    fprintf(file, "\nTransaction ID: %d\n", transaction.transactionId);
-    fprintf(file, "Customer Name: %s\n", transaction.payment.customerName);
-    for (int i = 0; i < transaction.itemCount; i++) {
-        fprintf(file, "Item: %s | Quantity: %d | Price: %.2f\n", transaction.items[i].name, transaction.items[i].quantity, transaction.items[i].price);
+    fprintf(file, "\nTransaction for User ID: %d\n", userRecord.id);
+    fprintf(file, "Product: %s\n", userRecord.product);
+    fprintf(file, "Price: %.2f\n", userRecord.price);
+    fprintf(file, "Discount: %.2f%%\n", userRecord.discount);
+    fprintf(file, "Total Amount: %.2f\n", payment.totalAmount);
+    fprintf(file, "Payment Method 1: %s, Amount Paid: %.2f\n", payment.paymentMethod1, payment.amountPaid1);
+    if (payment.amountPaid2 > 0) {
+        fprintf(file, "Payment Method 2: %s, Amount Paid: %.2f\n", payment.paymentMethod2, payment.amountPaid2);
     }
-    fprintf(file, "Total Amount: %.2f\n", transaction.payment.totalAmount);
-    fprintf(file, "Payment Method 1: %s\n", transaction.payment.paymentMethod1);
-    if (transaction.payment.amountPaid2 > 0) {
-        fprintf(file, "Payment Method 2: %s\n", transaction.payment.paymentMethod2);
-    }
-    fprintf(file, "-------------------------------------\n");
+    fprintf(file, "Remaining Amount: %.2f\n", payment.remainingAmount);
+    fprintf(file, "------------------------------------------\n");
 
     fclose(file);
+    printf("Transaction saved to file.\n");
 }
 
-// Function to handle the payment processing system
+// Function for payment processing system
 void payment_processing_system() {
-    // Initialize inventory with some items
-    Item inventory[MAX_ITEMS] = {
-        {1, "Laptop", 10, 50000},
-        {2, "Mouse", 50, 500},
-        {3, "Keyboard", 30, 1500}
-    };
-    int inventoryCount = 3;
+    PaymentUser userRecord;
+    Payment payment;
 
-    Transaction transaction;
-    transaction.itemCount = 0;
-    transaction.transactionId = 1;  // Assign a unique transaction ID
+    int customerId;
+    char productName[50];
 
-    printf("Enter customer name: ");
-    scanf("%s", transaction.payment.customerName);
+    printf("Enter your customer ID: ");
+    scanf("%d", &customerId);
+    printf("Enter product name: ");
+    scanf("%s", productName);
 
-    printf("How many items does the customer want to buy? ");
-    scanf("%d", &transaction.itemCount);
-
-    for (int i = 0; i < transaction.itemCount; i++) {
-        printf("Enter item ID: ");
-        scanf("%d", &transaction.items[i].id);
-        printf("Enter quantity: ");
-        scanf("%d", &transaction.items[i].quantity);
-
-        // Match the entered item ID with the inventory and assign the price
-        for (int j = 0; j < inventoryCount; j++) {
-            if (inventory[j].id == transaction.items[i].id) {
-                transaction.items[i].price = inventory[j].price;
-                break;
-            }
-        }
+    // Retrieve user record
+    if (!get_user_record(customerId, productName, &userRecord)) {
+        return;  // Stop if the user record is not found
     }
 
-    // Calculate total cost and apply discount
-    transaction.payment.totalAmount = calculate_total(transaction.items, transaction.itemCount);
+    // Apply additional discount if applicable
+    apply_additional_discount(&userRecord);
 
-    printf("Enter discount rate (in percentage): ");
-    scanf("%f", &transaction.payment.discountRate);
-    transaction.payment.totalAmount = apply_discount(transaction.payment.totalAmount, transaction.payment.discountRate);
+    // Process payment
+    process_payment(userRecord, &payment);
 
-    printf("Total Amount (after discount): %.2f\n", transaction.payment.totalAmount);
-
-    // Process payment and update inventory
-    process_payment(&transaction);
-    update_inventory(inventory, inventoryCount, transaction);
-    
-    // Display and save the invoice
-    display_invoice(transaction);
-    save_transaction_to_file(transaction);
+    // Save transaction details to file
+    save_transaction_to_file(userRecord, payment);
 }
 

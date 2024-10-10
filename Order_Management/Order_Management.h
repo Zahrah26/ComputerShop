@@ -1,11 +1,6 @@
 #ifndef ORDER_MANAGEMENT_H
 #define ORDER_MANAGEMENT_H
 
-#define MAX_NAME_LENGTH 50
-#define MAX_PRODUCT_LENGTH 50
-#define MAX_PAYMENT_METHOD 20
-#define MAX_STATUS 15
-
 typedef struct {
     int day;
     int month;
@@ -13,21 +8,23 @@ typedef struct {
 } Date;
 
 typedef struct {
-    int orderId;
-    char customerName[MAX_NAME_LENGTH];
-    char product[MAX_PRODUCT_LENGTH];
+    int customerId;
+    char productName[50];
     float price;
     float discount;
-    char paymentMethod[MAX_PAYMENT_METHOD];
-    char status[MAX_STATUS]; 
-    Date orderDate; 
+    int warrantyYears;
+    char paymentMethod[20];
+    char status[20];  // "pre-order", "delivered", or "pending"
+    Date orderDate;
 } Order;
 
+// Function Prototypes
+void getDate(Date *date);
 void addOrder();
 void viewOrders();
-void queryOrder(int id);
-void deleteOrder(int id);
-void updateOrder(int id);
-void order_management_menu();  // Menu for handling orders
+void queryOrder(int customerId);
+void deleteOrder(int customerId);
+void updateOrderStatus(int customerId);
+void order_management_menu();
 
-#endif
+#endif  // ORDER_MANAGEMENT_H
