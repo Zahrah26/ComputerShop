@@ -9,9 +9,13 @@ The system comprises six key modules that manage different aspects of the shopâ€
 
 Features:
 1.Manage products and their inventories.
+
 2.Handle customer information.
+
 3.Process customer orders and payments.
+
 4.Generate comprehensive sales reports.
+
 5.Facilitate after-sales services, including warranty tracking and technician assignment.
 
 Modules
