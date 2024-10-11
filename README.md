@@ -8,6 +8,7 @@ Pixel Shop System is a fully-integrated software solution developed to streamlin
 The system comprises six key modules that manage different aspects of the shop’s operations. Each module focuses on a distinct feature of the system, working together to provide a seamless experience for both the staff and customers.
 
 Features:
+
 1.Manage products and their inventories.
 
 2.Handle customer information.
