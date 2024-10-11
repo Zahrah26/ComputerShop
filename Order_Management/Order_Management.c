@@ -38,8 +38,8 @@ void addOrder() {
     // Store order date
     getDate(&newOrder.orderDate);
 
-    // Save the order to the file
-    fprintf(file, "%d %s %.2f %.2f %d %s %s %02d-%02d-%04d\n", 
+    // Save the order to the file with proper alignment
+    fprintf(file, "%-10d %-20s %-10.2f %-10.2f %-10d %-10s %-10s %02d-%02d-%04d\n", 
             newOrder.customerId, newOrder.productName, newOrder.price, newOrder.discount, 
             newOrder.warrantyYears, newOrder.paymentMethod, newOrder.status, 
             newOrder.orderDate.day, newOrder.orderDate.month, newOrder.orderDate.year);
@@ -57,13 +57,13 @@ void viewOrders() {
     }
 
     Order order;
-    printf("Customer ID\tProduct Name\tPrice\tDiscount\tWarranty\tPayment\tStatus\t\tDate\n");
-    printf("--------------------------------------------------------------------------------------------------\n");
+    printf("%-10s %-20s %-10s %-10s %-10s %-10s %-10s %-12s\n", "Customer ID", "Product Name", "Price", "Discount", "Warranty", "Payment", "Status", "Date");
+    printf("--------------------------------------------------------------------------------------------------------\n");
 
     while (fscanf(file, "%d %s %f %f %d %s %s %d-%d-%d", &order.customerId, order.productName, 
                   &order.price, &order.discount, &order.warrantyYears, order.paymentMethod, 
                   order.status, &order.orderDate.day, &order.orderDate.month, &order.orderDate.year) != EOF) {
-        printf("%d\t\t%s\t\t%.2f\t%.2f\t%d years\t%s\t%s\t%02d-%02d-%04d\n", 
+        printf("%-10d %-20s %-10.2f %-10.2f %-10d %-10s %-10s %02d-%02d-%04d\n", 
                order.customerId, order.productName, order.price, order.discount, 
                order.warrantyYears, order.paymentMethod, order.status, 
                order.orderDate.day, order.orderDate.month, order.orderDate.year);
@@ -124,7 +124,7 @@ void deleteOrder(int customerId) {
                   &order.price, &order.discount, &order.warrantyYears, order.paymentMethod, 
                   order.status, &order.orderDate.day, &order.orderDate.month, &order.orderDate.year) != EOF) {
         if (order.customerId != customerId) {
-            fprintf(tempFile, "%d %s %.2f %.2f %d %s %s %02d-%02d-%04d\n", 
+            fprintf(tempFile, "%-10d %-20s %-10.2f %-10.2f %-10d %-10s %-10s %02d-%02d-%04d\n", 
                     order.customerId, order.productName, order.price, order.discount, 
                     order.warrantyYears, order.paymentMethod, order.status, 
                     order.orderDate.day, order.orderDate.month, order.orderDate.year);
@@ -177,7 +177,7 @@ void updateOrderStatus(int customerId) {
     printf("Enter new status (pre-order/delivered/pending): ");
     scanf("%s", order.status);
 
-    fprintf(file, "%d %s %.2f %.2f %d %s %s %02d-%02d-%04d\n", 
+    fprintf(file, "%-10d %-20s %-10.2f %-10.2f %-10d %-10s %-10s %02d-%02d-%04d\n", 
             order.customerId, order.productName, order.price, order.discount, 
             order.warrantyYears, order.paymentMethod, order.status, 
             order.orderDate.day, order.orderDate.month, order.orderDate.year);

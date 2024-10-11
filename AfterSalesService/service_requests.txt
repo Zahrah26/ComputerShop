@@ -1,0 +1,6 @@
+Customer ID: 1
+Product: Lenovoi3
+Problem: Screen Repair 
+Assigned Technician: Sam
+Date: 20-1-2016
+

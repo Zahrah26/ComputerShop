@@ -1,4 +1,4 @@
-//Shreya Doorgachurn 2312862
+// Shreya Doorgachurn 2312862
 #ifndef PRODUCT_MANAGEMENT_H
 #define PRODUCT_MANAGEMENT_H
 
@@ -17,9 +17,8 @@ void updateProduct();
 void deleteProduct();
 void saveToFile();
 void loadFromFile();
-void productStaffMenu(); 
+void productStaffMenu();
 int check_product_availability(int productId, int quantity);  // Check availability
 void update_product_quantity(int productId, int quantity);    // Update stock
-
 
 #endif // PRODUCT_MANAGEMENT_H

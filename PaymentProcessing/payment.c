@@ -173,4 +173,3 @@ void payment_processing_system() {
     // Save transaction details to file
     save_transaction_to_file(userRecord, payment);
 }
-

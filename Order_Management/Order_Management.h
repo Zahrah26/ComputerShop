@@ -1,12 +1,15 @@
+// Oushvina Seewoobudut - 2314942
 #ifndef ORDER_MANAGEMENT_H
 #define ORDER_MANAGEMENT_H
 
+// Date structure to store order date
 typedef struct {
     int day;
     int month;
     int year;
 } Date;
 
+// Order structure containing order details
 typedef struct {
     int customerId;
     char productName[50];
@@ -18,7 +21,7 @@ typedef struct {
     Date orderDate;
 } Order;
 
-// Function Prototypes
+// Function prototypes for order management
 void getDate(Date *date);
 void addOrder();
 void viewOrders();
