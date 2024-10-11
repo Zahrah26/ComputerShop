@@ -1,0 +1,9 @@
+
+Transaction for User ID: 1
+Product: Lenovoi3
+Original Price: 20000.00
+Discount: 5.00% (Amount: 1000.00)
+Total Amount: 19000.00
+Payment Method 1: cash, Amount Paid: 19000.00
+Remaining Amount: 0.00
+------------------------------------------
