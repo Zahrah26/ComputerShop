@@ -26,6 +26,7 @@ void addProduct() {
     printf("Enter product quantity: ");
     scanf("%d", &p.quantity);
 
+    // Ensure consistent formatting with fixed widths for each field
     fprintf(file, "%-8d %-20s %-10.2f %-10d\n", p.id, p.name, p.price, p.quantity);
     fclose(file);
 
@@ -40,14 +41,12 @@ void viewProducts() {
         return;
     }
 
+    // Display header with proper spacing
     printf("\n%-8s %-20s %-10s %-10s\n", "ID", "Name", "Price", "Quantity");
     printf("--------------------------------------------------------\n");
 
-    while (fscanf(file, "%d", &p.id) != EOF) {
-        fgetc(file);  // consume newline character
-        fgets(p.name, sizeof(p.name), file);
-        p.name[strcspn(p.name, "\n")] = 0;  // remove trailing newline
-        fscanf(file, "%f %d", &p.price, &p.quantity);
+    // Read from file and print with proper alignment
+    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
         printf("%-8d %-20s %-10.2f %-10d\n", p.id, p.name, p.price, p.quantity);
     }
 
@@ -68,17 +67,12 @@ void updateProduct() {
 
     FILE *tempFile = fopen("temp.txt", "w");
 
-    while (fscanf(file, "%d", &p.id) != EOF) {
-        fgetc(file);  // consume newline
-        fgets(p.name, sizeof(p.name), file);
-        p.name[strcspn(p.name, "\n")] = 0;  // remove trailing newline
-        fscanf(file, "%f %d", &p.price, &p.quantity);
-
+    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
         if (p.id == id) {
             printf("Enter new product name: ");
             getchar();
             fgets(p.name, sizeof(p.name), stdin);
-            p.name[strcspn(p.name, "\n")] = 0;
+            p.name[strcspn(p.name, "\n")] = 0;  // remove trailing newline
             printf("Enter new product price: ");
             scanf("%f", &p.price);
             printf("Enter new product quantity: ");
@@ -115,12 +109,7 @@ void deleteProduct() {
 
     FILE *tempFile = fopen("temp.txt", "w");
 
-    while (fscanf(file, "%d", &p.id) != EOF) {
-        fgetc(file);  // consume newline
-        fgets(p.name, sizeof(p.name), file);
-        p.name[strcspn(p.name, "\n")] = 0;
-        fscanf(file, "%f %d", &p.price, &p.quantity);
-
+    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
         if (p.id != id) {
             fprintf(tempFile, "%-8d %-20s %-10.2f %-10d\n", p.id, p.name, p.price, p.quantity);
         } else {
@@ -148,12 +137,7 @@ int check_product_availability(int productId, int quantity) {
     }
 
     Product p;
-    while (fscanf(file, "%d", &p.id) != EOF) {
-        fgetc(file);  // consume newline
-        fgets(p.name, sizeof(p.name), file);
-        p.name[strcspn(p.name, "\n")] = 0;
-        fscanf(file, "%f %d", &p.price, &p.quantity);
-
+    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
         if (p.id == productId) {
             fclose(file);
             return p.quantity >= quantity;
@@ -174,12 +158,7 @@ void update_product_quantity(int productId, int quantity) {
     FILE *tempFile = fopen("temp.txt", "w");
     Product p;
 
-    while (fscanf(file, "%d", &p.id) != EOF) {
-        fgetc(file);  // consume newline
-        fgets(p.name, sizeof(p.name), file);
-        p.name[strcspn(p.name, "\n")] = 0;
-        fscanf(file, "%f %d", &p.price, &p.quantity);
-
+    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
         if (p.id == productId) {
             p.quantity -= quantity;
         }
