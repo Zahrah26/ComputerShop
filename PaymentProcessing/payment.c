@@ -42,7 +42,7 @@ int get_user_record(int customerId, char productName[], PaymentUser *userRecord)
 // Apply additional discount if the customer qualifies
 void apply_additional_discount(PaymentUser *userRecord) {
     printf("Total number of purchases made by the customer: %d\n", userRecord->totalPurchases);
-    if (userRecord->totalPurchases > 5) {
+    if (userRecord->totalPurchases > 3) {
         printf("Customer qualifies for an additional 2%% loyalty discount!\n");
         userRecord->discount += 2;
     } else {
