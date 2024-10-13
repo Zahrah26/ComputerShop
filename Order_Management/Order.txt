@@ -1,3 +1,1 @@
-
-1 Lenovoi3 20000.00 5.00 5 cash pre-order 24-04-2015
-2 SamsungA23 50000.00 5.00 2 Cah delivered 22-01-2023
+1          Lenovoi3             20000.00   5.00       5          cash       pre-order  24-04-2015

@@ -1,5 +1,3 @@
-// Shreya Doorgachurn 2312862
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -7,6 +5,7 @@
 
 #define FILENAME "Product_Management/product.txt"
 
+// Function to add a product
 void addProduct() {
     Product p;
     FILE *file = fopen(FILENAME, "a");
@@ -18,21 +17,22 @@ void addProduct() {
     printf("Enter product ID: ");
     scanf("%d", &p.id);
     printf("Enter product name: ");
-    getchar();  // to remove any leftover newline character in input buffer
+    getchar();  // To remove any leftover newline character in input buffer
     fgets(p.name, sizeof(p.name), stdin);
-    p.name[strcspn(p.name, "\n")] = 0;  // remove trailing newline
+    p.name[strcspn(p.name, "\n")] = 0;  // Remove trailing newline
     printf("Enter product price: ");
     scanf("%f", &p.price);
     printf("Enter product quantity: ");
     scanf("%d", &p.quantity);
 
-    // Ensure consistent formatting with fixed widths for each field
-    fprintf(file, "%-8d %-20s %-10.2f %-10d\n", p.id, p.name, p.price, p.quantity);
+    // Write to file with consistent formatting
+    fprintf(file, "%d\t%s\t%.2f\t%d\n", p.id, p.name, p.price, p.quantity);
     fclose(file);
 
     printf("Product added successfully.\n");
 }
 
+// Function to view products
 void viewProducts() {
     Product p;
     FILE *file = fopen(FILENAME, "r");
@@ -41,21 +41,22 @@ void viewProducts() {
         return;
     }
 
-    // Display header with proper spacing
-    printf("\n%-8s %-20s %-10s %-10s\n", "ID", "Name", "Price", "Quantity");
-    printf("--------------------------------------------------------\n");
+    // Display header
+    printf("\n%-10s %-25s %-10s %-10s\n", "ID", "Name", "Price", "Quantity");
+    printf("---------------------------------------------------------\n");
 
     // Read from file and print with proper alignment
-    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
-        printf("%-8d %-20s %-10.2f %-10d\n", p.id, p.name, p.price, p.quantity);
+    while (fscanf(file, "%d\t%[^\t]\t%f\t%d\n", &p.id, p.name, &p.price, &p.quantity) != EOF) {
+        printf("%-10d %-25s %-10.2f %-10d\n", p.id, p.name, p.price, p.quantity);
     }
 
     fclose(file);
 }
 
+// Function to update a product
 void updateProduct() {
     Product p;
-    FILE *file = fopen(FILENAME, "r+");
+    FILE *file = fopen(FILENAME, "r");
     if (file == NULL) {
         printf("Error opening file.\n");
         return;
@@ -67,12 +68,12 @@ void updateProduct() {
 
     FILE *tempFile = fopen("temp.txt", "w");
 
-    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
+    while (fscanf(file, "%d\t%[^\t]\t%f\t%d\n", &p.id, p.name, &p.price, &p.quantity) != EOF) {
         if (p.id == id) {
             printf("Enter new product name: ");
             getchar();
             fgets(p.name, sizeof(p.name), stdin);
-            p.name[strcspn(p.name, "\n")] = 0;  // remove trailing newline
+            p.name[strcspn(p.name, "\n")] = 0;  // Remove trailing newline
             printf("Enter new product price: ");
             scanf("%f", &p.price);
             printf("Enter new product quantity: ");
@@ -80,7 +81,7 @@ void updateProduct() {
             found = 1;
         }
 
-        fprintf(tempFile, "%-8d %-20s %-10.2f %-10d\n", p.id, p.name, p.price, p.quantity);
+        fprintf(tempFile, "%d\t%s\t%.2f\t%d\n", p.id, p.name, p.price, p.quantity);
     }
 
     fclose(file);
@@ -95,6 +96,7 @@ void updateProduct() {
     }
 }
 
+// Function to delete a product
 void deleteProduct() {
     Product p;
     FILE *file = fopen(FILENAME, "r");
@@ -109,9 +111,9 @@ void deleteProduct() {
 
     FILE *tempFile = fopen("temp.txt", "w");
 
-    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
+    while (fscanf(file, "%d\t%[^\t]\t%f\t%d\n", &p.id, p.name, &p.price, &p.quantity) != EOF) {
         if (p.id != id) {
-            fprintf(tempFile, "%-8d %-20s %-10.2f %-10d\n", p.id, p.name, p.price, p.quantity);
+            fprintf(tempFile, "%d\t%s\t%.2f\t%d\n", p.id, p.name, p.price, p.quantity);
         } else {
             found = 1;
         }
@@ -129,6 +131,7 @@ void deleteProduct() {
     }
 }
 
+// Function to check product availability
 int check_product_availability(int productId, int quantity) {
     FILE *file = fopen(FILENAME, "r");
     if (file == NULL) {
@@ -137,7 +140,7 @@ int check_product_availability(int productId, int quantity) {
     }
 
     Product p;
-    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
+    while (fscanf(file, "%d\t%[^\t]\t%f\t%d\n", &p.id, p.name, &p.price, &p.quantity) != EOF) {
         if (p.id == productId) {
             fclose(file);
             return p.quantity >= quantity;
@@ -148,6 +151,7 @@ int check_product_availability(int productId, int quantity) {
     return 0;
 }
 
+// Function to update product quantity
 void update_product_quantity(int productId, int quantity) {
     FILE *file = fopen(FILENAME, "r+");
     if (file == NULL) {
@@ -158,12 +162,12 @@ void update_product_quantity(int productId, int quantity) {
     FILE *tempFile = fopen("temp.txt", "w");
     Product p;
 
-    while (fscanf(file, "%d %s %f %d", &p.id, p.name, &p.price, &p.quantity) != EOF) {
+    while (fscanf(file, "%d\t%[^\t]\t%f\t%d\n", &p.id, p.name, &p.price, &p.quantity) != EOF) {
         if (p.id == productId) {
             p.quantity -= quantity;
         }
 
-        fprintf(tempFile, "%-8d %-20s %-10.2f %-10d\n", p.id, p.name, p.price, p.quantity);
+        fprintf(tempFile, "%d\t%s\t%.2f\t%d\n", p.id, p.name, p.price, p.quantity);
     }
 
     fclose(file);
@@ -173,6 +177,7 @@ void update_product_quantity(int productId, int quantity) {
     rename("temp.txt", FILENAME);
 }
 
+// Function to display the staff menu
 void productStaffMenu() {
     int choice;
     while (1) {
